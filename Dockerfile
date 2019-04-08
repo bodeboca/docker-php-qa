@@ -6,8 +6,9 @@ MAINTAINER Adam Culp <adamculp@uws.net>
 
 ENV TARGET_DIR="/usr/local/lib/php-code-quality" \
     COMPOSER_ALLOW_SUPERUSER=1 \
-    TIMEZONE=America/New_York \
-    PHP_MEMORY_LIMIT=512M
+    TIMEZONE=Europe/Madrid \
+    PHP_MEMORY_LIMIT=1G \
+    PATH=$PATH:/usr/local/lib/php-code-quality/vendor/bin
 
 RUN mkdir -p $TARGET_DIR
 
