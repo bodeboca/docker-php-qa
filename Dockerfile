@@ -2,7 +2,7 @@
 # Choices available at https://hub.docker.com/_/php/ stick to "-cli" versions recommended
 FROM php:7.2-cli-stretch
 
-MAINTAINER Adam Culp <adamculp@uws.net>
+MAINTAINER Sbit.io <soporte@sbit.io>
 
 ENV TARGET_DIR="/usr/local/lib/php-code-quality" \
     COMPOSER_ALLOW_SUPERUSER=1 \
