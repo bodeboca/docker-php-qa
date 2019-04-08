@@ -22,7 +22,8 @@ RUN apt-get update && \
     apt-get install -y zip && \
     apt-get install -y git && \
     apt-get install -y libxml2-dev && \
-    docker-php-ext-install xml
+    apt-get install -y libxslt-dev && \
+    docker-php-ext-install xml xsl
 
 RUN chmod 744 $TARGET_DIR/composer-installer.sh
 RUN chmod 744 /usr/local/bin/composer
@@ -37,8 +38,13 @@ RUN $TARGET_DIR/composer-installer.sh && \
        "phploc/phploc:^4.0" \
        "pdepend/pdepend:^2.5" \
        "phpmd/phpmd:^2.6" \
-       "sebastian/phpcpd:^2.0" \
+       "sebastian/phpcpd:^4.1" \
        "friendsofphp/php-cs-fixer:^2.14" \
        "phpcompatibility/php-compatibility:^9.0" \
        "phpmetrics/phpmetrics:^2.4" \
-       "phpstan/phpstan:^0.11"
+       "phpstan/phpstan:^0.11" \
+       "drupal/coder:^8.3.1" \
+       "dealerdirect/phpcodesniffer-composer-installer" \
+       "mglaman/phpstan-drupal" \
+       "edgedesign/phpqa" \
+       "jakub-onderka/php-parallel-lint" "jakub-onderka/php-console-highlighter" "phpstan/phpstan" "friendsofphp/php-cs-fixer:~2.2" "vimeo/psalm" "sensiolabs/security-checker"
