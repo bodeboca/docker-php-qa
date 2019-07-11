@@ -47,4 +47,9 @@ RUN $TARGET_DIR/composer-installer.sh && \
        "dealerdirect/phpcodesniffer-composer-installer" \
        "mglaman/phpstan-drupal" \
        "edgedesign/phpqa" \
-       "jakub-onderka/php-parallel-lint" "jakub-onderka/php-console-highlighter" "phpstan/phpstan" "friendsofphp/php-cs-fixer:~2.2" "vimeo/psalm" "sensiolabs/security-checker"
+       "jakub-onderka/php-parallel-lint" \
+       "jakub-onderka/php-console-highlighter" \
+       "phpstan/phpstan" \
+       "friendsofphp/php-cs-fixer:~2.2" \
+       "vimeo/psalm" \
+       "sensiolabs/security-checker"
