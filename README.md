@@ -50,6 +50,7 @@ Available commands provided by the sbitio/php-qa image:
 * vendor/bin/php-cs-fixer + args
 * vendor/bin/phpstan + args (more robust commands via config file)
 * sh (or any other command) + args
+* yamllint
 
 ### Some example commands:
 
