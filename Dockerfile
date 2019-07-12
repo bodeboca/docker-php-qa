@@ -15,12 +15,7 @@ ENV PATH=$PATH:$TARGET_DIR/vendor/bin
 
 RUN mkdir -p $TARGET_DIR
 
-RUN echo "[PHP]\nmemory_limit=${PHP_MEMORY_LIMIT}" >> $PHP_INI_DIR/conf.d/overrides.ini
-
 WORKDIR $TARGET_DIR
-
-COPY composer-installer.sh $TARGET_DIR/
-COPY composer-wrapper.sh /usr/local/bin/composer
 
 RUN apt-get update && \
     echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections && \
@@ -37,6 +32,11 @@ RUN apt-get update && \
 ENV LANG=$LOCALE
 ENV LANGUAGE=$LOCALE
 ENV LC_ALL=$LOCALE
+
+RUN echo "[PHP]\nmemory_limit=${PHP_MEMORY_LIMIT}" >> $PHP_INI_DIR/conf.d/overrides.ini
+
+COPY composer-installer.sh $TARGET_DIR/
+COPY composer-wrapper.sh /usr/local/bin/composer
 
 RUN chmod 744 $TARGET_DIR/composer-installer.sh
 RUN chmod 744 /usr/local/bin/composer
