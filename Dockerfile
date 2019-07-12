@@ -7,6 +7,8 @@ MAINTAINER Sbit.io <soporte@sbit.io>
 ENV TARGET_DIR="/usr/local/lib/php-qa" \
     COMPOSER_ALLOW_SUPERUSER=1 \
     TIMEZONE=Europe/Madrid \
+    LOCALE=es_ES.UTF-8 \
+    LOCALE_CHARSET=UTF-8 \
     PHP_MEMORY_LIMIT=1G
 
 ENV PATH=$PATH:$TARGET_DIR/vendor/bin
@@ -21,6 +23,9 @@ COPY composer-installer.sh $TARGET_DIR/
 COPY composer-wrapper.sh /usr/local/bin/composer
 
 RUN apt-get update && \
+    echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections && \
+    echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y locales && \
     apt-get install -y wget && \
     apt-get install -y zip && \
     apt-get install -y yamllint && apt-get install -y python3-pkg-resources && \
@@ -28,6 +33,10 @@ RUN apt-get update && \
     apt-get install -y libxml2-dev && \
     apt-get install -y libxslt-dev && \
     docker-php-ext-install xml xsl
+
+ENV LANG=$LOCALE
+ENV LANGUAGE=$LOCALE
+ENV LC_ALL=$LOCALE
 
 RUN chmod 744 $TARGET_DIR/composer-installer.sh
 RUN chmod 744 /usr/local/bin/composer
