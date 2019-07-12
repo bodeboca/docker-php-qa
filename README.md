@@ -71,7 +71,7 @@ See https://github.com/sebastianbergmann/phploc for more usage details of this t
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/phploc -v --names "*.php" \
+phploc -v --names "*.php" \
 --exclude "vendor" . > ./php_code_quality/phploc.txt
 ```
 
@@ -81,7 +81,7 @@ See https://phpmd.org/download/index.html for more usage details of this tool.
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/phpmd . xml codesize --exclude 'vendor' \
+phpmd . xml codesize --exclude 'vendor' \
 --reportfile './php_code_quality/phpmd_results.xml'
 ```
 
@@ -91,7 +91,7 @@ See https://pdepend.org/ for more usage details of this tool.
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/pdepend --ignore='vendor' \
+pdepend --ignore='vendor' \
 --summary-xml='./php_code_quality/pdepend_output.xml' \
 --jdepend-chart='./php_code_quality/pdepend_chart.svg' \
 --overview-pyramid='./php_code_quality/pdepend_pyramid.svg' .
@@ -103,7 +103,7 @@ See https://github.com/sebastianbergmann/phpcpd for more usage details of this t
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/phpcpd . \
+phpcpd . \
 --exclude 'vendor' > ./php_code_quality/phpcpd_results.txt
 ```
 
@@ -113,7 +113,7 @@ See http://www.phpmetrics.org/ for more usage details of this tool.
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/phpmetrics --excluded-dirs 'vendor' \
+phpmetrics --excluded-dirs 'vendor' \
 --report-html=./php_code_quality/metrics_results .
 ```
 
@@ -123,7 +123,7 @@ See https://github.com/squizlabs/PHP_CodeSniffer/wiki for more usage details of 
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
-php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --extensions=php --ignore=vendor \
+phpcs -sv --extensions=php --ignore=vendor \
 --report-file=./php_code_quality/codesniffer_results.txt .
 ```
 
@@ -134,8 +134,8 @@ usage details of this tool.
 
 ```
 $ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest sh -c \
-'php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --config-set installed_paths  /usr/local/lib/php-code-quality/vendor/phpcompatibility/php-compatibility && \
-php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --standard='PHPCompatibility' --extensions=php --ignore=vendor . \
+'phpcs -sv --config-set installed_paths  /usr/local/lib/php-qa/vendor/phpcompatibility/php-compatibility && \
+phpcs -sv --standard='PHPCompatibility' --extensions=php --ignore=vendor . \
 --report-file=./php_code_quality/phpcompatibility_results.txt .'
 ```
 
