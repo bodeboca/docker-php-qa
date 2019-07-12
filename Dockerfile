@@ -4,13 +4,16 @@ FROM php:7.2-cli-stretch
 
 MAINTAINER Sbit.io <soporte@sbit.io>
 
-ENV TARGET_DIR="/usr/local/lib/php-code-quality" \
+ENV TARGET_DIR="/usr/local/lib/php-qa" \
     COMPOSER_ALLOW_SUPERUSER=1 \
     TIMEZONE=Europe/Madrid \
-    PHP_MEMORY_LIMIT=1G \
-    PATH=$PATH:/usr/local/lib/php-code-quality/vendor/bin
+    PHP_MEMORY_LIMIT=1G
+
+ENV PATH=$PATH:$TARGET_DIR/vendor/bin
 
 RUN mkdir -p $TARGET_DIR
+
+RUN echo "[PHP]\nmemory_limit=${PHP_MEMORY_LIMIT}" >> $PHP_INI_DIR/conf.d/overrides.ini
 
 WORKDIR $TARGET_DIR
 
