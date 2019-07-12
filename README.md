@@ -22,21 +22,21 @@ Note: This image does nothing when invoking it without a followup command, such 
 
 ```
 $ cd </path/to/desired/directory>
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest <desired-command-with-arguments>
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest <desired-command-with-arguments>
 ```
 
 Windows users: The use of "$PWD" for present working directory will not work as expected, instead use the full path. 
-Such as "//c/Users/adamculp/project".
+Such as "//c/Users/sbitio/project".
 
 In the example above, Docker runs an interactive terminal to be removed when all is completed, and mounts 
 the current host directory ($PWD) inside the container, sets this as the current working directory, and then 
-loads the image adamculp/php-code-quality. Following this the user can add any commands to be executed inside 
+loads the image sbitio/php-qa. Following this the user can add any commands to be executed inside 
 the container. (such as running the tools provided by the image)
 
 This is the most common use case, enabling the user to run the tools on everything in and/or below the working 
 directory.
 
-Available commands provided by the adamculp/php-code-quality image:
+Available commands provided by the sbitio/php-qa image:
 
 * php + args
 * composer + args
@@ -69,7 +69,7 @@ php -d memory_limit=1G
 See https://github.com/sebastianbergmann/phploc for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/phploc -v --names "*.php" \
 --exclude "vendor" . > ./php_code_quality/phploc.txt
 ```
@@ -79,7 +79,7 @@ php /usr/local/lib/php-code-quality/vendor/bin/phploc -v --names "*.php" \
 See https://phpmd.org/download/index.html for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/phpmd . xml codesize --exclude 'vendor' \
 --reportfile './php_code_quality/phpmd_results.xml'
 ```
@@ -89,7 +89,7 @@ php /usr/local/lib/php-code-quality/vendor/bin/phpmd . xml codesize --exclude 'v
 See https://pdepend.org/ for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/pdepend --ignore='vendor' \
 --summary-xml='./php_code_quality/pdepend_output.xml' \
 --jdepend-chart='./php_code_quality/pdepend_chart.svg' \
@@ -101,7 +101,7 @@ php /usr/local/lib/php-code-quality/vendor/bin/pdepend --ignore='vendor' \
 See https://github.com/sebastianbergmann/phpcpd for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/phpcpd . \
 --exclude 'vendor' > ./php_code_quality/phpcpd_results.txt
 ```
@@ -111,7 +111,7 @@ php /usr/local/lib/php-code-quality/vendor/bin/phpcpd . \
 See http://www.phpmetrics.org/ for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/phpmetrics --excluded-dirs 'vendor' \
 --report-html=./php_code_quality/metrics_results .
 ```
@@ -121,7 +121,7 @@ php /usr/local/lib/php-code-quality/vendor/bin/phpmetrics --excluded-dirs 'vendo
 See https://github.com/squizlabs/PHP_CodeSniffer/wiki for more usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --extensions=php --ignore=vendor \
 --report-file=./php_code_quality/codesniffer_results.txt .
 ```
@@ -132,7 +132,7 @@ See https://github.com/PHPCompatibility/PHPCompatibility and https://github.com/
 usage details of this tool.
 
 ```
-$ docker run -it --rm -v "$PWD":/app -w /app adamculp/php-code-quality:latest sh -c \
+$ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest sh -c \
 'php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --config-set installed_paths  /usr/local/lib/php-code-quality/vendor/phpcompatibility/php-compatibility && \
 php /usr/local/lib/php-code-quality/vendor/bin/phpcs -sv --standard='PHPCompatibility' --extensions=php --ignore=vendor . \
 --report-file=./php_code_quality/phpcompatibility_results.txt .'
@@ -149,20 +149,20 @@ specific version of the tools loaded by Composer might be required.
 After cloning, navigate to the location:
 
 ```
-$ git clone https://github.com/adamculp/php-code-quality.git
+$ git clone https://github.com/sbitio/php-qa.git
 $ cd php-code-quality
 ```
 
 Alter the Dockerfile as desired, then build the image locally: (don't miss the dot at the end)
 
 ```
-$ docker build -t adamculp/php-code-quality .
+$ docker build -t sbitio/php-qa .
 ```
 
 Or a user may simply desire the image as-is, for later use:
 
 ```
-$ docker build -t adamculp/php-code-quality https://github.com/adamculp/php-code-quality.git
+$ docker build -t sbitio/php-qa https://github.com/sbitio/php-qa.git
 ```
 
 ## Enjoy!
