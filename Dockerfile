@@ -20,7 +20,7 @@ COPY composer-wrapper.sh /usr/local/bin/composer
 RUN apt-get update && \
     apt-get install -y wget && \
     apt-get install -y zip && \
-    apt-get install -y yamllint && \
+    apt-get install -y yamllint && apt-get install -y python3-pkg-resources && \
     apt-get install -y git && \
     apt-get install -y libxml2-dev && \
     apt-get install -y libxslt-dev && \
