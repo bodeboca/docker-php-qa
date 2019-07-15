@@ -4,20 +4,23 @@ FROM php:7.2-cli-stretch
 
 MAINTAINER Sbit.io <soporte@sbit.io>
 
-ENV TARGET_DIR="/usr/local/lib/php-code-quality" \
+ENV TARGET_DIR="/usr/local/lib/php-qa" \
     COMPOSER_ALLOW_SUPERUSER=1 \
     TIMEZONE=Europe/Madrid \
-    PHP_MEMORY_LIMIT=1G \
-    PATH=$PATH:/usr/local/lib/php-code-quality/vendor/bin
+    LOCALE=es_ES.UTF-8 \
+    LOCALE_CHARSET=UTF-8 \
+    PHP_MEMORY_LIMIT=1G
+
+ENV PATH=$PATH:$TARGET_DIR/vendor/bin
 
 RUN mkdir -p $TARGET_DIR
 
 WORKDIR $TARGET_DIR
 
-COPY composer-installer.sh $TARGET_DIR/
-COPY composer-wrapper.sh /usr/local/bin/composer
-
 RUN apt-get update && \
+    echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections && \
+    echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y locales && \
     apt-get install -y wget && \
     apt-get install -y zip && \
     apt-get install -y yamllint && apt-get install -y python3-pkg-resources && \
@@ -25,6 +28,15 @@ RUN apt-get update && \
     apt-get install -y libxml2-dev && \
     apt-get install -y libxslt-dev && \
     docker-php-ext-install xml xsl
+
+ENV LANG=$LOCALE
+ENV LANGUAGE=$LOCALE
+ENV LC_ALL=$LOCALE
+
+RUN echo "[PHP]\nmemory_limit=${PHP_MEMORY_LIMIT}" >> $PHP_INI_DIR/conf.d/overrides.ini
+
+COPY composer-installer.sh $TARGET_DIR/
+COPY composer-wrapper.sh /usr/local/bin/composer
 
 RUN chmod 744 $TARGET_DIR/composer-installer.sh
 RUN chmod 744 /usr/local/bin/composer
