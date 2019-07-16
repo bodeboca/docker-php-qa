@@ -17,17 +17,22 @@ RUN mkdir -p $TARGET_DIR
 
 WORKDIR $TARGET_DIR
 
-RUN apt-get update && \
-    echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections && \
-    echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y locales && \
-    apt-get install -y wget && \
-    apt-get install -y zip && \
-    apt-get install -y yamllint && apt-get install -y python3-pkg-resources && \
-    apt-get install -y git && \
-    apt-get install -y libxml2-dev && \
-    apt-get install -y libxslt-dev && \
-    docker-php-ext-install xml xsl
+RUN apt-get update -qq \
+ && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
+ && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -yqq -o=Dpkg::Use-Pty=0 \
+      locales \
+      wget \
+      zip \
+      yamllint python3-pkg-resources \
+      git \
+      libxml2-dev \
+      libxslt-dev \
+ && docker-php-ext-install xml xsl \
+ && rm -rf /var/lib/apt/lists/* \
+ && apt-get clean -yqq \
+
 
 ENV LANG=$LOCALE
 ENV LANGUAGE=$LOCALE
@@ -42,10 +47,10 @@ RUN chmod 744 $TARGET_DIR/composer-installer.sh
 RUN chmod 744 /usr/local/bin/composer
 
 # Run composer installation of needed tools
-RUN $TARGET_DIR/composer-installer.sh && \
-   composer selfupdate && \
-   composer require --prefer-stable --prefer-source "hirak/prestissimo:^0.3" && \
-   composer require --prefer-stable --prefer-dist \
+RUN $TARGET_DIR/composer-installer.sh \
+ && composer selfupdate \
+ && composer require --prefer-stable --prefer-source "hirak/prestissimo:^0.3" \
+ && composer require --prefer-stable --prefer-dist \
        "squizlabs/php_codesniffer:^3.0" \
        "phpunit/phpunit:^8.0" \
        "phploc/phploc:^4.0" \
