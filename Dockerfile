@@ -59,14 +59,10 @@ RUN $TARGET_DIR/composer-installer.sh && \
        "drupal/coder:^8.3.1" \
        "dealerdirect/phpcodesniffer-composer-installer" \
        "mglaman/phpstan-drupal" \
-       #"edgedesign/phpqa" \
+       "edgedesign/phpqa" \
        "jakub-onderka/php-parallel-lint" \
        "jakub-onderka/php-console-highlighter" \
        "phpstan/phpstan" \
        "friendsofphp/php-cs-fixer:~2.2" \
        "vimeo/psalm" \
        "sensiolabs/security-checker"
-
-RUN composer config repositories.jonhattan-phpqa git https://github.com/jonhattan/phpqa.git && \
-   composer require --prefer-stable --prefer-dist \
-   "edgedesign/phpqa:dev-integration"
