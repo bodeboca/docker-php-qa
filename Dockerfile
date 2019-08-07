@@ -17,7 +17,8 @@ RUN mkdir -p $TARGET_DIR
 
 WORKDIR $TARGET_DIR
 
-RUN apt-get update -qq \
+RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
+ && apt-get update -qq \
  && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
  && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
  && DEBIAN_FRONTEND=noninteractive \
@@ -25,13 +26,16 @@ RUN apt-get update -qq \
       locales \
       wget \
       zip \
-      yamllint python3-pkg-resources \
+      python3-pkg-resources \
       git \
       libxml2-dev \
       libxslt-dev \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -yqq -o=Dpkg::Use-Pty=0 \
+    -t stretch-backports yamllint \
  && docker-php-ext-install xml xsl \
  && rm -rf /var/lib/apt/lists/* \
- && apt-get clean -yqq \
+ && apt-get clean -yqq
 
 
 ENV LANG=$LOCALE
