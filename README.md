@@ -1,4 +1,5 @@
 # php-code-quality
+[![DockerHub Badge](http://dockeri.co/image/sbitio/php-qa)](https://hub.docker.com/r/sbitio/php-qa/)
 The objective is to include multiple PHP code quality tools in an easy to use Docker image. The 
 tools include PHP static analysis, lines of PHP code report, mess detector, code smell highlighting, 
 copy/paste detection, and the applications compatibility from one version of PHP to another for modernization.
