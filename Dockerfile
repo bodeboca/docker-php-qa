@@ -71,8 +71,8 @@ RUN $TARGET_DIR/composer-installer.sh \
        "edgedesign/phpqa" \
          # phpqa suggested tools
          # See https://github.com/EdgedesignCZ/phpqa/blob/master/bin/suggested-tools.sh#L16
-         "jakub-onderka/php-parallel-lint" \
-         "jakub-onderka/php-console-highlighter" \
+         "php-parallel-lint/php-parallel-lint" \
+         "php-parallel-lint/php-console-highlighter" \
          "phpstan/phpstan:~0.12" \
          # phpstan dependency
            "nette/neon" \
