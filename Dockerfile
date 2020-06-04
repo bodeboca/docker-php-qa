@@ -1,6 +1,6 @@
 # Choose the desired PHP version
 # Choices available at https://hub.docker.com/_/php/ stick to "-cli" versions recommended
-FROM php:7.2-cli-stretch
+FROM php:7.4-cli-buster
 
 MAINTAINER Sbit.io <soporte@sbit.io>
 
@@ -17,7 +17,7 @@ RUN mkdir -p $TARGET_DIR
 
 WORKDIR $TARGET_DIR
 
-RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
+RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
  && apt-get update -qq \
  && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
  && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
@@ -32,7 +32,7 @@ RUN echo "deb http://deb.debian.org/debian stretch-backports main contrib non-fr
       libxslt-dev \
  && DEBIAN_FRONTEND=noninteractive \
     apt-get install -yqq -o=Dpkg::Use-Pty=0 \
-    -t stretch-backports yamllint \
+    -t buster-backports yamllint \
  && docker-php-ext-install xml xsl \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean -yqq
