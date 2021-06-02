@@ -72,9 +72,10 @@ RUN $TARGET_DIR/composer-installer.sh \
          # See https://github.com/EdgedesignCZ/phpqa/blob/master/bin/suggested-tools.sh#L16
          "php-parallel-lint/php-parallel-lint" \
          "php-parallel-lint/php-console-highlighter" \
-         "phpstan/phpstan:~0.12" \
+         "phpstan/phpstan" \
          # phpstan dependency
            "nette/neon" \
-         "friendsofphp/php-cs-fixer:~2.2" \
-         "vimeo/psalm:~1" \
-         "sensiolabs/security-checker:~5"
+         "qossmic/deptrac-shim" \
+         "friendsofphp/php-cs-fixer:>=2" \
+         "vimeo/psalm:>=2" \
+         "sensiolabs/security-checker"
