@@ -34,6 +34,8 @@ RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-fre
     apt-get install -yqq -o=Dpkg::Use-Pty=0 \
     -t buster-backports yamllint \
  && docker-php-ext-install xml xsl \
+ && docker-php-ext-install -j$(nproc) mysqli \
+ && docker-php-ext-install -j$(nproc) pdo_mysql \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean -yqq
 
