@@ -82,4 +82,4 @@ RUN $TARGET_DIR/composer-installer.sh \
          "qossmic/deptrac-shim" \
          "friendsofphp/php-cs-fixer:>=2" \
          "vimeo/psalm:>=2" \
-         "sensiolabs/security-checker"
+         "enlightn/security-checker"
