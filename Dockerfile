@@ -2,7 +2,7 @@
 # Choices available at https://hub.docker.com/_/php/ stick to "-cli" versions recommended
 FROM php:7.4-cli-bullseye
 
-MAINTAINER Sbit.io <soporte@sbit.io>
+LABEL maintainer="Sbit.io <soporte@sbit.io>"
 
 ENV TARGET_DIR="/usr/local/lib/php-qa" \
     COMPOSER_ALLOW_SUPERUSER=1 \
@@ -17,25 +17,27 @@ RUN mkdir -p $TARGET_DIR
 
 WORKDIR $TARGET_DIR
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
  && apt-get update -qq \
  && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
  && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
  && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -yqq -o=Dpkg::Use-Pty=0 \
-      locales \
-      wget \
-      zip \
-      python3-pkg-resources \
-      git \
-      libxml2-dev \
-      libxslt-dev \
+    apt-get install -yqq -o=Dpkg::Use-Pty=0 --no-install-recommends \
+      locales=2.* \
+      wget=1.* \
+      zip=3.* \
+      unzip=6.* \
+      python3-pkg-resources=52.* \
+      git=1:2.30.* \
+      libxml2-dev=2.* \
+      libxslt1-dev=1.* \
  && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -yqq -o=Dpkg::Use-Pty=0 \
-    -t buster-backports yamllint \
+    apt-get install -yqq -o=Dpkg::Use-Pty=0 --no-install-recommends \
+    -t bullseye-backports yamllint=1.* \
  && docker-php-ext-install xml xsl \
- && docker-php-ext-install -j$(nproc) mysqli \
- && docker-php-ext-install -j$(nproc) pdo_mysql \
+ && docker-php-ext-install "-j$(nproc)" mysqli \
+ && docker-php-ext-install "-j$(nproc)" pdo_mysql \
  && rm -rf /var/lib/apt/lists/* \
  && apt-get clean -yqq
 
@@ -44,13 +46,13 @@ ENV LANG=$LOCALE
 ENV LANGUAGE=$LOCALE
 ENV LC_ALL=$LOCALE
 
-RUN echo "[PHP]\nmemory_limit=${PHP_MEMORY_LIMIT}" >> $PHP_INI_DIR/conf.d/overrides.ini
+RUN printf '[PHP]\nmemory_limit=%s' "${PHP_MEMORY_LIMIT}" >> "$PHP_INI_DIR/conf.d/overrides.ini"
 
 COPY composer-installer.sh $TARGET_DIR/
 COPY composer-wrapper.sh /usr/local/bin/composer
 
-RUN chmod 744 $TARGET_DIR/composer-installer.sh
-RUN chmod 744 /usr/local/bin/composer
+RUN chmod 744 $TARGET_DIR/composer-installer.sh \
+ && chmod 744 /usr/local/bin/composer
 
 # Run composer installation of needed tools
 RUN $TARGET_DIR/composer-installer.sh \
