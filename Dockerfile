@@ -48,15 +48,10 @@ ENV LC_ALL=$LOCALE
 
 RUN printf '[PHP]\nmemory_limit=%s' "${PHP_MEMORY_LIMIT}" >> "$PHP_INI_DIR/conf.d/overrides.ini"
 
-COPY composer-installer.sh $TARGET_DIR/
-COPY composer-wrapper.sh /usr/local/bin/composer
-
-RUN chmod 744 $TARGET_DIR/composer-installer.sh \
- && chmod 744 /usr/local/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # Run composer installation of needed tools
-RUN $TARGET_DIR/composer-installer.sh \
- && composer selfupdate \
+RUN composer config --no-plugins --global allow-plugins.dealerdirect/phpcodesniffer-composer-installer true \
  && composer require --prefer-stable --prefer-dist \
        "squizlabs/php_codesniffer:^3.0" \
        "phpunit/phpunit:^8.0" \
