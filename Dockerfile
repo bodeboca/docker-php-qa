@@ -36,6 +36,7 @@ RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-f
     apt-get install -yqq -o=Dpkg::Use-Pty=0 --no-install-recommends \
     -t bullseye-backports yamllint=1.* \
  && docker-php-ext-install xml xsl \
+ && docker-php-ext-install "-j$(nproc)" intl \
  && docker-php-ext-install "-j$(nproc)" mysqli \
  && docker-php-ext-install "-j$(nproc)" pdo_mysql \
  && rm -rf /var/lib/apt/lists/* \
