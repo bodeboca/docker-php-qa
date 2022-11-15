@@ -64,7 +64,7 @@ RUN composer config --no-plugins --global allow-plugins.dealerdirect/phpcodesnif
        "phpcompatibility/php-compatibility:^9.0" \
        "phpmetrics/phpmetrics:^2.4" \
        "phpstan/phpstan:^0.11" \
-       "drupal/coder:^8.3.1" \
+       "drupal/coder:^8.3.1 !=8.3.16" \
        "dealerdirect/phpcodesniffer-composer-installer" \
        "mglaman/phpstan-drupal" \
        "edgedesign/phpqa" \
