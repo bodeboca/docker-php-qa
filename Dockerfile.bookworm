@@ -1,0 +1,96 @@
+# Choose the desired PHP version
+# Choices available at https://hub.docker.com/_/php/ stick to "-cli" versions recommended
+ARG PHP_VERSION=8
+ARG FLAVOUR=cli-bookworm
+ARG BASE_IMAGE=${PHP_VERSION}-${FLAVOUR}
+
+FROM php:${BASE_IMAGE}
+# Re-load needed ARGS. See https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG FLAVOUR
+
+
+LABEL maintainer="Sbit.io <soporte@sbit.io>"
+
+ENV TARGET_DIR="/usr/local/lib/php-qa" \
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    TIMEZONE=Europe/Madrid \
+    LOCALE=es_ES.UTF-8 \
+    LOCALE_CHARSET=UTF-8 \
+    PHP_MEMORY_LIMIT=1G
+
+ENV PATH=$PATH:$TARGET_DIR/vendor/bin
+
+RUN mkdir -p $TARGET_DIR
+
+WORKDIR $TARGET_DIR
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo "deb http://deb.debian.org/debian ${FLAVOUR#*-}-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
+ && apt-get update -qq \
+ && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
+ && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
+ && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -yqq -o=Dpkg::Use-Pty=0 --no-install-recommends \
+      -V \
+      locales=2.* \
+      wget=1.* \
+      gpg=2.* gpg-agent=2.* dirmngr=2.* \
+      zip=3.* \
+      unzip=6.* \
+      python3-pkg-resources=66.* \
+      git=1:2.39.* \
+      libxml2-dev=2.* \
+      libxslt1-dev=1.* \
+      yamllint=1.* \
+ && docker-php-ext-install xml xsl \
+ && docker-php-ext-install "-j$(nproc)" intl \
+ && docker-php-ext-install "-j$(nproc)" mysqli \
+ && docker-php-ext-install "-j$(nproc)" pdo_mysql \
+ && rm -rf /var/lib/apt/lists/* \
+ && apt-get clean -yqq
+
+
+ENV LANG=$LOCALE
+ENV LANGUAGE=$LOCALE
+ENV LC_ALL=$LOCALE
+
+RUN printf '[PHP]\nmemory_limit=%s' "${PHP_MEMORY_LIMIT}" >> "$PHP_INI_DIR/conf.d/overrides.ini"
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# Run composer installation of needed tools
+RUN composer config --no-plugins --global allow-plugins.dealerdirect/phpcodesniffer-composer-installer true \
+ && composer require --prefer-stable --prefer-dist \
+       "squizlabs/php_codesniffer:^3.0" \
+       "phpunit/phpunit:^10.0" \
+       "phploc/phploc:^8.0.x-dev" \
+       "pdepend/pdepend:^2.5" \
+       "phpmd/phpmd:^2.6" \
+       #"sebastian/phpcpd:^6.0" \
+       "friendsofphp/php-cs-fixer:^2.14" \
+       "phpcompatibility/php-compatibility:^9.0" \
+       "phpmetrics/phpmetrics:^2.4" \
+       "phpstan/phpstan:^0.11" \
+       "drupal/coder:^8.3.1 !=8.3.16" \
+       "dealerdirect/phpcodesniffer-composer-installer" \
+       "mglaman/phpstan-drupal" \
+       "edgedesign/phpqa" \
+         # phpqa suggested tools
+         # See https://github.com/EdgedesignCZ/phpqa/blob/master/bin/suggested-tools.sh#L16
+         "php-parallel-lint/php-parallel-lint" \
+         "php-parallel-lint/php-console-highlighter" \
+         "phpstan/phpstan" \
+         # phpstan dependency
+           "nette/neon" \
+         "qossmic/deptrac-shim" \
+         "friendsofphp/php-cs-fixer:>=2" \
+         "vimeo/psalm:>=2" \
+         "enlightn/security-checker"
+
+# Phive installs, needed since phpcpd is archived and somewhat incompatible
+RUN wget -O phive.phar https://phar.io/releases/phive.phar \
+ && wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc \
+ && gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 \
+ && gpg --verify phive.phar.asc phive.phar \
+ && chmod +x phive.phar \
+ && mv phive.phar /usr/local/bin/phive

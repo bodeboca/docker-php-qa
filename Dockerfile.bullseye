@@ -1,6 +1,12 @@
 # Choose the desired PHP version
 # Choices available at https://hub.docker.com/_/php/ stick to "-cli" versions recommended
-FROM php:7.4-cli-bullseye
+ARG PHP_VERSION=7
+ARG FLAVOUR=cli-bullseye
+ARG BASE_IMAGE=${PHP_VERSION}-${FLAVOUR}
+
+FROM php:${BASE_IMAGE}
+# Re-load needed ARGS. See https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG FLAVOUR
 
 LABEL maintainer="Sbit.io <soporte@sbit.io>"
 
@@ -18,7 +24,7 @@ RUN mkdir -p $TARGET_DIR
 WORKDIR $TARGET_DIR
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo "deb http://deb.debian.org/debian bullseye-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
+RUN echo "deb http://deb.debian.org/debian ${FLAVOUR#*-}-backports main contrib non-free" > /etc/apt/sources.list.d/backports.list \
  && apt-get update -qq \
  && echo "locales locales/default_environment_locale select $LOCALE" | debconf-set-selections \
  && echo "locales locales/locales_to_be_generated select $LOCALE $LOCALE_CHARSET" | debconf-set-selections \
