@@ -19,13 +19,18 @@ More specifically this includes:
 - phpstan/phpstan
 - edgedesign/phpqa
 
+There are curently 3 flavours [published in Docker Hub](https://hub.docker.com/r/sbitio/php-qa/):
+- 8-bookworm: Based on PHP's `8-cli-bookworm` tag
+- 7-bulleye: Based on PHP's `7-cli-bullseye` tag
+- latest: Previous version to be deprecated in the future
+
 ## Usage
 
 Note: This image does nothing when invoking it without a followup command, such as:
 
 ```bash
 cd </path/to/desired/directory>
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest <desired-command-with-arguments>
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm <desired-command-with-arguments>
 ```
 
 Windows users: The use of "$PWD" for present working directory will not work as expected, instead use the full path.
@@ -74,7 +79,7 @@ php -d memory_limit=1G
 See https://github.com/EdgedesignCZ/phpqa for more usage details of this tool, its a very convenient wrapper for most of the tools included.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phpqa --report offline
 ```
 
@@ -83,7 +88,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See https://github.com/sebastianbergmann/phploc for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phploc -v --names "*.php" \
     --exclude "vendor" . > ./php_code_quality/phploc.txt
 ```
@@ -93,7 +98,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See https://phpmd.org/download/index.html for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phpmd . xml codesize --exclude 'vendor' \
     --reportfile './php_code_quality/phpmd_results.xml'
 ```
@@ -103,7 +108,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See https://pdepend.org/ for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   pdepend --ignore='vendor' \
     --summary-xml='./php_code_quality/pdepend_output.xml' \
     --jdepend-chart='./php_code_quality/pdepend_chart.svg' \
@@ -115,7 +120,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See https://github.com/sebastianbergmann/phpcpd for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phpcpd . \
     --exclude 'vendor' > ./php_code_quality/phpcpd_results.txt
 ```
@@ -125,7 +130,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See http://www.phpmetrics.org/ for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phpmetrics --excluded-dirs 'vendor' \
     --report-html=./php_code_quality/metrics_results .
 ```
@@ -135,7 +140,7 @@ docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
 See https://github.com/squizlabs/PHP_CodeSniffer/wiki for more usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm \
   phpcs -sv --extensions=php --ignore=vendor \
     --report-file=./php_code_quality/codesniffer_results.txt .
 ```
@@ -146,7 +151,7 @@ See https://github.com/PHPCompatibility/PHPCompatibility and https://github.com/
 usage details of this tool.
 
 ```bash
-docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:latest sh -c \
+docker run -it --rm -v "$PWD":/app -w /app sbitio/php-qa:8-cli-bookworm sh -c \
   'phpcs -sv --config-set installed_paths  /usr/local/lib/php-qa/vendor/phpcompatibility/php-compatibility \
     && phpcs -sv --standard='PHPCompatibility' --extensions=php --ignore=vendor . \
          --report-file=./php_code_quality/phpcompatibility_results.txt .'
